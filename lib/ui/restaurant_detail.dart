@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_api/model/restaurant_detail.dart';
 
 import '../core/api_client.dart';
-import '../util/constant.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = "/detail";
