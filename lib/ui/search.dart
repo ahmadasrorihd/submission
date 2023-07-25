@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_api/model/restaurant.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_api/ui/restaurant_detail.dart';
 
-import '../../core/api_client.dart';
+import '../providers/provider.dart';
+import '../util/constant.dart';
 
 class Search extends SearchDelegate {
-  final ApiClient _apiClient = ApiClient();
-
   @override
   List<Widget>? buildActions(BuildContext context) {
     return [
@@ -30,140 +30,53 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    Future<RestaurantResult> search() async {
-      RestaurantResult userRes = await _apiClient.getAllRestaurant();
-      return userRes;
-    }
+    Provider.of<DataProvider>(context, listen: false).search(query);
+    final restaurantData = Provider.of<DataProvider>(context);
 
-    return const Text('data');
-    //   return FutureBuilder<RestaurantResult>(
-    //     future: search(),
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasData) {
-    //         return ListView.builder(
-    //             scrollDirection: Axis.vertical,
-    //             shrinkWrap: true,
-    //             primary: false,
-    //             padding: const EdgeInsets.all(10),
-    //             itemCount: snapshot.data!.features.length,
-    //             itemBuilder: (BuildContext context, int index) {
-    //               var catalog = snapshot.data?.features[index].attributes;
-
-    //               return Row(
-    //                 mainAxisAlignment: MainAxisAlignment.start,
-    //                 crossAxisAlignment: CrossAxisAlignment.start,
-    //                 children: [
-    //                   InkWell(
-    //                     onTap: () {
-    //                       Navigator.pushNamed(context, DetailCatalog.routeName,
-    //                           arguments: catalog);
-    //                     },
-    //                     child: Container(
-    //                       decoration: BoxDecoration(
-    //                           boxShadow: [
-    //                             BoxShadow(
-    //                               color: Colors.grey.withOpacity(0.5),
-    //                               spreadRadius: 5,
-    //                               blurRadius: 7,
-    //                               offset: const Offset(
-    //                                   0, 3), // changes position of shadow
-    //                             ),
-    //                           ],
-    //                           color: Colors.white,
-    //                           borderRadius: BorderRadius.circular(8)),
-    //                       child: Padding(
-    //                         padding: const EdgeInsets.all(16.0),
-    //                         child: Image.asset(
-    //                           "assets/images/thumbs.png",
-    //                           width: 120,
-    //                         ),
-    //                       ),
-    //                     ),
-    //                   ),
-    //                   Container(
-    //                     padding: const EdgeInsets.all(16),
-    //                     child: Column(
-    //                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                       children: [
-    //                         Text(
-    //                           catalog!.solutionN,
-    //                           maxLines: 1,
-    //                           overflow: TextOverflow.ellipsis,
-    //                           style: const TextStyle(
-    //                               color: Colors.black,
-    //                               fontWeight: FontWeight.bold),
-    //                         ),
-    //                         Container(
-    //                           margin: const EdgeInsets.only(top: 8),
-    //                           child: Row(
-    //                             children: [
-    //                               Text(catalog.sectorTea),
-    //                               Container(
-    //                                 margin: const EdgeInsets.only(left: 8),
-    //                                 child: Text(
-    //                                   catalog.developmen.toString(),
-    //                                   style: const TextStyle(
-    //                                       color: Colors.black,
-    //                                       fontWeight: FontWeight.bold),
-    //                                 ),
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         ),
-    //                         Container(
-    //                           margin: const EdgeInsets.only(top: 16),
-    //                           child: Row(
-    //                             children: [
-    //                               const Icon(Icons.fingerprint),
-    //                               Container(
-    //                                 margin: const EdgeInsets.only(left: 8),
-    //                                 child: Text(
-    //                                   catalog.solutionI,
-    //                                   style: const TextStyle(
-    //                                       color: Colors.black,
-    //                                       fontWeight: FontWeight.bold),
-    //                                 ),
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         ),
-    //                         Container(
-    //                           decoration: BoxDecoration(
-    //                               // color: kPrimaryColor,
-    //                               borderRadius: BorderRadius.circular(32)),
-    //                           margin: const EdgeInsets.only(top: 8),
-    //                           child: Padding(
-    //                             padding: const EdgeInsets.all(8.0),
-    //                             child: Row(
-    //                               mainAxisAlignment: MainAxisAlignment.start,
-    //                               children: [
-    //                                 const Icon(
-    //                                   Icons.bookmark_add,
-    //                                   color: Colors.white,
-    //                                 ),
-    //                                 Container(
-    //                                   margin: const EdgeInsets.only(left: 4),
-    //                                   child: const Text(
-    //                                     "Favorite",
-    //                                     style: TextStyle(
-    //                                         fontSize: 10, color: Colors.white),
-    //                                   ),
-    //                                 ),
-    //                               ],
-    //                             ),
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   )
-    //                 ],
-    //               );
-    //             });
-    //       } else {
-    //         return const Center(child: CircularProgressIndicator());
-    //       }
-    //     },
-    //   );
+    return ListView.builder(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        primary: false,
+        padding: const EdgeInsets.all(10),
+        itemCount: restaurantData.searchResult.restaurants.length,
+        itemBuilder: (BuildContext context, int index) {
+          var restaurant = restaurantData.searchResult.restaurants[index];
+          return ListTile(
+            onTap: () {
+              Navigator.pushNamed(context, RestaurantDetail.routeName,
+                  arguments: restaurant.id);
+            },
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            leading: Image.network(
+              '$baseUrl/images/small/${restaurant.pictureId}',
+              width: 120,
+              errorBuilder: (ctx, error, _) =>
+                  const Center(child: Icon(Icons.error)),
+            ),
+            title: Text(restaurant.name.toString()),
+            subtitle: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    const Icon(Icons.pin_drop),
+                    Text(restaurant.city.toString()),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.star,
+                      color: Colors.yellow,
+                    ),
+                    Text(restaurant.rating.toString()),
+                  ],
+                )
+              ],
+            ),
+          );
+        });
   }
 
   @override
