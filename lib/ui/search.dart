@@ -30,53 +30,67 @@ class Search extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    Provider.of<DataProvider>(context, listen: false).search(query);
-    final restaurantData = Provider.of<DataProvider>(context);
+    final dataProvider = Provider.of<DataProvider>(context, listen: false);
+    dataProvider.search(query);
 
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        primary: false,
-        padding: const EdgeInsets.all(10),
-        itemCount: restaurantData.searchResult.restaurants.length,
-        itemBuilder: (BuildContext context, int index) {
-          var restaurant = restaurantData.searchResult.restaurants[index];
-          return ListTile(
-            onTap: () {
-              Navigator.pushNamed(context, RestaurantDetail.routeName,
-                  arguments: restaurant.id);
-            },
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-            leading: Image.network(
-              '$baseUrl/images/small/${restaurant.pictureId}',
-              width: 120,
-              errorBuilder: (ctx, error, _) =>
-                  const Center(child: Icon(Icons.error)),
-            ),
-            title: Text(restaurant.name.toString()),
-            subtitle: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.pin_drop),
-                    Text(restaurant.city.toString()),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.star,
-                      color: Colors.yellow,
+    return Consumer<DataProvider>(builder: (context, data, child) {
+      if (data.loading) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      } else if (data.errorMessage.isNotEmpty) {
+        return const Center(
+          child: Text('No Internet Connection'),
+        );
+      } else {
+        return data.searchResult.founded == 0
+            ? const Center(child: Text('No data found'))
+            : ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                primary: false,
+                padding: const EdgeInsets.all(10),
+                itemCount: data.searchResult.restaurants.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var restaurant = data.searchResult.restaurants[index];
+                  return ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(context, RestaurantDetail.routeName,
+                          arguments: restaurant.id);
+                    },
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    leading: Image.network(
+                      '$baseUrl/images/small/${restaurant.pictureId}',
+                      width: 120,
+                      errorBuilder: (ctx, error, _) =>
+                          const Center(child: Icon(Icons.error)),
                     ),
-                    Text(restaurant.rating.toString()),
-                  ],
-                )
-              ],
-            ),
-          );
-        });
+                    title: Text(restaurant.name.toString()),
+                    subtitle: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(Icons.pin_drop),
+                            Text(restaurant.city.toString()),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            Text(restaurant.rating.toString()),
+                          ],
+                        )
+                      ],
+                    ),
+                  );
+                });
+      }
+    });
   }
 
   @override
