@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../core/api_client.dart';
+import '../core/api/api_client.dart';
 import '../model/restaurant.dart';
 import '../model/restaurant_detail.dart';
 import '../model/search.dart';
 
 class DataProvider with ChangeNotifier {
-  final ApiClient apiClient; // Declare a final UserRepository object
+  final ApiClient apiClient;
   DataProvider({required this.apiClient});
 
   late RestaurantResult _listRestaurant;

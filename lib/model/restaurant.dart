@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final restaurantResult = restaurantResultFromJson(jsonString);
-
 import 'dart:convert';
 
 RestaurantResult restaurantResultFromJson(String str) =>
@@ -23,14 +19,15 @@ class RestaurantResult {
     required this.restaurants,
   });
 
-  factory RestaurantResult.fromJson(Map<String, dynamic> json) =>
-      RestaurantResult(
-        error: json["error"],
-        message: json["message"],
-        count: json["count"],
-        restaurants: List<Restaurant>.from(
-            json["restaurants"].map((x) => Restaurant.fromJson(x))),
-      );
+  factory RestaurantResult.fromJson(Map<String, dynamic> json) {
+    return RestaurantResult(
+      error: json["error"],
+      message: json["message"],
+      count: json["count"],
+      restaurants: List<Restaurant>.from(
+          json["restaurants"].map((x) => Restaurant.fromJson(x))),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
         "error": error,
@@ -41,12 +38,12 @@ class RestaurantResult {
 }
 
 class Restaurant {
-  String id;
-  String name;
-  String description;
-  String pictureId;
-  String city;
-  double rating;
+  late String id;
+  late String name;
+  late String description;
+  late String pictureId;
+  late String city;
+  late double rating;
 
   Restaurant({
     required this.id,
@@ -74,4 +71,26 @@ class Restaurant {
         "city": city,
         "rating": rating,
       };
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{};
+
+    map['id'] = id;
+    map['name'] = name;
+    map['description'] = description;
+    map['pictureId'] = pictureId;
+    map['city'] = city;
+    map['rating'] = rating;
+
+    return map;
+  }
+
+  Restaurant.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    name = map['name'];
+    description = map['description'];
+    pictureId = map['pictureId'];
+    city = map['city'];
+    rating = map['rating'];
+  }
 }

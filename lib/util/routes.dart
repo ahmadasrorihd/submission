@@ -1,10 +1,13 @@
 import 'package:flutter/widgets.dart';
 import 'package:restaurant_api/ui/restaurant_detail.dart';
-import 'package:restaurant_api/ui/restaurant_list.dart';
+
+import '../model/restaurant.dart';
+import '../ui/home.dart';
 
 final Map<String, WidgetBuilder> routes = {
   RestaurantDetail.routeName: (context) => RestaurantDetail(
-        restaurantId: ModalRoute.of(context)?.settings.arguments as String,
+        detailRestaurant:
+            ModalRoute.of(context)?.settings.arguments as Restaurant,
       ),
-  RestaurantList.routeName: (context) => const RestaurantList()
+  Home.routeName: (context) => const Home()
 };

@@ -10,8 +10,8 @@ class ApiClient {
     try {
       Response response = await _dio.get('$baseUrl/list');
       return RestaurantResult.fromJson(response.data);
-    } on DioException catch (e) {
-      return e.response!.data;
+    } on DioException catch (_) {
+      rethrow;
     }
   }
 
@@ -19,8 +19,8 @@ class ApiClient {
     try {
       Response response = await _dio.get('$baseUrl/search?q=$query');
       return SearchResult.fromJson(response.data);
-    } on DioException catch (e) {
-      return e.response!.data;
+    } on DioException catch (_) {
+      rethrow;
     }
   }
 
@@ -29,8 +29,8 @@ class ApiClient {
     try {
       Response response = await _dio.get('$baseUrl/detail/$restaurantId');
       return RestaurantDetailResult.fromJson(response.data);
-    } on DioException catch (e) {
-      return e.response!.data;
+    } on DioException catch (_) {
+      rethrow;
     }
   }
 }

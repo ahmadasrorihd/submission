@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_api/providers/provider.dart';
-import 'package:restaurant_api/ui/restaurant_list.dart';
+import 'package:restaurant_api/providers/api_provider.dart';
+import 'package:restaurant_api/providers/db_provider.dart';
+import 'package:restaurant_api/ui/home.dart';
 import 'package:restaurant_api/util/routes.dart';
 
-import 'core/api_client.dart';
+import 'core/api/api_client.dart';
 
 void main() {
   runApp(
@@ -12,6 +13,7 @@ void main() {
       providers: [
         ChangeNotifierProvider(
             create: (_) => DataProvider(apiClient: ApiClient())),
+        ChangeNotifierProvider(create: (_) => DbProvider()),
       ],
       child: const MyApp(),
     ),
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: RestaurantList.routeName,
+      initialRoute: Home.routeName,
       routes: routes,
     );
   }

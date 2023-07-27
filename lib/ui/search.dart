@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_api/ui/restaurant_detail.dart';
 
-import '../providers/provider.dart';
+import '../providers/api_provider.dart';
 import '../util/constant.dart';
 
 class Search extends SearchDelegate {

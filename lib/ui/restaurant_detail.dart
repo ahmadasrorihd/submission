@@ -2,24 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_api/util/constant.dart';
 
-import '../providers/provider.dart';
+import '../core/db/db_helper.dart';
+import '../model/restaurant.dart';
+import '../providers/api_provider.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = "/detail";
-  final String restaurantId;
+  final Restaurant? detailRestaurant;
 
-  const RestaurantDetail({super.key, required this.restaurantId});
+  const RestaurantDetail({super.key, this.detailRestaurant});
 
   @override
   State<RestaurantDetail> createState() => _RestaurantDetailState();
 }
 
 class _RestaurantDetailState extends State<RestaurantDetail> {
+  DbHelper db = DbHelper();
   @override
   void initState() {
     super.initState();
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
-    dataProvider.getRestaurantDetail(widget.restaurantId);
+    dataProvider.getRestaurantDetail(widget.detailRestaurant!.id);
   }
 
   @override
@@ -58,7 +61,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(restaurant.name,
                             style: const TextStyle(
@@ -160,10 +163,54 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           );
                         }),
                   ),
+                  const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text(
+                      "Review",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                  ),
+                  SizedBox(
+                    child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: restaurant.customerReviews.length,
+                        scrollDirection: Axis.vertical,
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (
+                          context,
+                          index,
+                        ) {
+                          return Container(
+                            margin: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                color: Colors.deepOrange),
+                            child: Center(
+                              child: Text(
+                                restaurant.customerReviews[index].review,
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
                 ],
               );
             }
           }),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await db.addToFavorite(widget.detailRestaurant!);
+          },
+          backgroundColor: Colors.white,
+          child: const Icon(
+            Icons.favorite,
+            color: Colors.red,
+          ),
         ));
   }
 }
