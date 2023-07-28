@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_api/providers/scheduling_provider.dart';
 
 class Setting extends StatefulWidget {
   const Setting({super.key});
@@ -12,25 +14,26 @@ class _SettingState extends State<Setting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            const Text(
-              'Restaurant Notification',
-              style: TextStyle(fontWeight: FontWeight.bold),
+      body: Consumer<SchedulingProvider>(
+        builder: (context, scheduled, _) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                const Text(
+                  'Restaurant Notification',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Spacer(),
+                Switch.adaptive(
+                    value: scheduled.isScheduled,
+                    onChanged: (value) async {
+                      scheduled.scheduledNews(value);
+                    })
+              ],
             ),
-            const Spacer(),
-            Switch(
-                value: notification,
-                activeColor: Colors.red,
-                onChanged: (bool value) {
-                  setState(() {
-                    notification = value;
-                  });
-                })
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -31,7 +31,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
         appBar: AppBar(
           title: const Text('Detail Restaurant'),
         ),
-        body: SafeArea(
+        body: SingleChildScrollView(
           child: Consumer<DataProvider>(builder: (context, data, child) {
             if (data.loading) {
               return const Center(
