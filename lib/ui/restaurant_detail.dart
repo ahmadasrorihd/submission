@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_api/util/constant.dart';
@@ -5,6 +7,7 @@ import 'package:restaurant_api/util/constant.dart';
 import '../core/db/db_helper.dart';
 import '../model/restaurant.dart';
 import '../providers/api_provider.dart';
+import '../providers/db_provider.dart';
 
 class RestaurantDetail extends StatefulWidget {
   static String routeName = "/detail";
@@ -17,7 +20,6 @@ class RestaurantDetail extends StatefulWidget {
 }
 
 class _RestaurantDetailState extends State<RestaurantDetail> {
-  DbHelper db = DbHelper();
   @override
   void initState() {
     super.initState();
@@ -27,6 +29,8 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final dbProvider = Provider.of<DbProvider>(context, listen: false);
+    dbProvider.getFavById(widget.detailRestaurant!.id);
     return Scaffold(
         appBar: AppBar(
           title: const Text('Detail Restaurant'),
@@ -200,13 +204,22 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            await db.addToFavorite(widget.detailRestaurant!);
+            dbProvider.addFav(widget.detailRestaurant!);
           },
           backgroundColor: Colors.white,
-          child: const Icon(
-            Icons.favorite,
-            color: Colors.red,
-          ),
+          child: Consumer<DbProvider>(builder: (context, data, child) {
+            if (data.restaurantData.isNull) {
+              return const Icon(
+                Icons.favorite,
+                color: Colors.white,
+              );
+            } else {
+              return const Icon(
+                Icons.favorite,
+                color: Colors.white,
+              );
+            }
+          }),
         ));
   }
 }

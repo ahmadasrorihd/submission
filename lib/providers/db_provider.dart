@@ -5,9 +5,11 @@ import '../core/db/db_helper.dart';
 
 class DbProvider extends ChangeNotifier {
   List<Restaurant> _restaurant = [];
+  late Restaurant _restaurantData;
   late DbHelper _dbHelper;
 
   List<Restaurant> get restaurant => _restaurant;
+  Restaurant get restaurantData => _restaurantData;
 
   DbProvider() {
     _dbHelper = DbHelper();
@@ -24,11 +26,11 @@ class DbProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Restaurant> getFavById(int id) async {
-    return await _dbHelper.getFavById(id);
+  void getFavById(String id) async {
+    _restaurantData = await _dbHelper.getFavById(id);
   }
 
-  void deleteNote(int id) async {
+  void deleteFav(int id) async {
     await _dbHelper.deleteFromFav(id);
     getAllFav();
   }

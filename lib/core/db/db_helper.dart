@@ -66,7 +66,7 @@ class DbHelper {
     return result.map((res) => Restaurant.fromMap(res)).toList();
   }
 
-  Future<Restaurant> getFavById(int id) async {
+  Future<Restaurant> getFavById(String id) async {
     var dbClient = await _db;
     List<Map<String, dynamic>> results = await dbClient!.query(
       tableName,

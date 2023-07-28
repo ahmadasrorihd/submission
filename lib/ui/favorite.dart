@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_api/ui/restaurant_detail.dart';
 
-import '../core/db/db_helper.dart';
 import '../providers/db_provider.dart';
 import '../util/constant.dart';
 
@@ -14,12 +13,10 @@ class Favorite extends StatefulWidget {
 }
 
 class _FavoriteState extends State<Favorite> {
-  DbHelper db = DbHelper();
-
   @override
   void initState() {
-    //menjalankan fungsi getallkontak saat pertama kali dimuat
-    db.getAllFavoriteRestaurant();
+    final dataProvider = Provider.of<DbProvider>(context, listen: false);
+    dataProvider.getAllFav();
     super.initState();
   }
 
