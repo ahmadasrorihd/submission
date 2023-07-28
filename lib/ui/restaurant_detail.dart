@@ -181,20 +181,16 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                           context,
                           index,
                         ) {
-                          return Container(
-                            margin: const EdgeInsets.all(8),
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(4)),
-                                color: Colors.deepOrange),
-                            child: Center(
-                              child: Text(
-                                restaurant.customerReviews[index].review,
-                                style: const TextStyle(color: Colors.white),
-                              ),
+                          return Column(children: [
+                            ListTile(
+                              leading: const Icon(Icons.person),
+                              title: Text(
+                                  restaurant.customerReviews[index].review),
+                              subtitle:
+                                  Text(restaurant.customerReviews[index].date),
                             ),
-                          );
+                            const Divider()
+                          ]);
                         }),
                   ),
                 ],
