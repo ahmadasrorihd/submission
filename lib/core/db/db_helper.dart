@@ -66,7 +66,7 @@ class DbHelper {
     return result.map((res) => Restaurant.fromMap(res)).toList();
   }
 
-  Future<Restaurant> getFavById(String id) async {
+  Future<bool> getFavById(String id) async {
     var dbClient = await _db;
     List<Map<String, dynamic>> results = await dbClient!.query(
       tableName,
@@ -74,10 +74,13 @@ class DbHelper {
       whereArgs: [id],
     );
 
-    return results.map((res) => Restaurant.fromMap(res)).first;
+    if (results.isNotEmpty) {
+      return true;
+    }
+    return false;
   }
 
-  Future<int?> deleteFromFav(int id) async {
+  Future<int?> deleteFromFav(String id) async {
     var dbClient = await _db;
     return await dbClient!
         .delete(tableName, where: '$columnId = ?', whereArgs: [id]);

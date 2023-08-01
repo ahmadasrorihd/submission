@@ -15,9 +15,9 @@ class Favorite extends StatefulWidget {
 class _FavoriteState extends State<Favorite> {
   @override
   void initState() {
+    super.initState();
     final dataProvider = Provider.of<DbProvider>(context, listen: false);
     dataProvider.getAllFav();
-    super.initState();
   }
 
   @override

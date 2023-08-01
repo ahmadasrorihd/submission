@@ -1,10 +1,7 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_api/util/constant.dart';
 
-import '../core/db/db_helper.dart';
 import '../model/restaurant.dart';
 import '../providers/api_provider.dart';
 import '../providers/db_provider.dart';
@@ -22,15 +19,17 @@ class RestaurantDetail extends StatefulWidget {
 class _RestaurantDetailState extends State<RestaurantDetail> {
   @override
   void initState() {
-    super.initState();
     final dataProvider = Provider.of<DataProvider>(context, listen: false);
     dataProvider.getRestaurantDetail(widget.detailRestaurant!.id);
+    final dbProvider = Provider.of<DbProvider>(context, listen: false);
+    dbProvider.getFavById(widget.detailRestaurant!.id);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final dbProvider = Provider.of<DbProvider>(context, listen: false);
-    dbProvider.getFavById(widget.detailRestaurant!.id);
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Detail Restaurant'),
@@ -178,6 +177,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                   SizedBox(
                     child: ListView.builder(
                         shrinkWrap: true,
+                        primary: false,
                         itemCount: restaurant.customerReviews.length,
                         scrollDirection: Axis.vertical,
                         padding: EdgeInsets.zero,
@@ -202,24 +202,20 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
             }
           }),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dbProvider.addFav(widget.detailRestaurant!);
+        floatingActionButton: Consumer<DbProvider>(
+          builder: (context, data, child) {
+            return data.restaurantData
+                ? FloatingActionButton(
+                    onPressed: () {
+                      dbProvider.deleteFav(widget.detailRestaurant!.id);
+                    },
+                    child: const Icon(Icons.favorite, color: Colors.red))
+                : FloatingActionButton(
+                    onPressed: () {
+                      dbProvider.addFav(widget.detailRestaurant!);
+                    },
+                    child: const Icon(Icons.favorite, color: Colors.white));
           },
-          backgroundColor: Colors.white,
-          child: Consumer<DbProvider>(builder: (context, data, child) {
-            if (data.restaurantData.isNull) {
-              return const Icon(
-                Icons.favorite,
-                color: Colors.white,
-              );
-            } else {
-              return const Icon(
-                Icons.favorite,
-                color: Colors.white,
-              );
-            }
-          }),
         ));
   }
 }
