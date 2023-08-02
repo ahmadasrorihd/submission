@@ -10,7 +10,14 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  bool notification = false;
+  @override
+  void initState() {
+    final dataProvider =
+        Provider.of<SchedulingProvider>(context, listen: false);
+    dataProvider.getReminderState();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

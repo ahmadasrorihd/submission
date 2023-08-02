@@ -24,50 +24,54 @@ class _FavoriteState extends State<Favorite> {
   Widget build(BuildContext context) {
     return Scaffold(body: Consumer<DbProvider>(
       builder: (context, data, child) {
-        return ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            primary: false,
-            padding: const EdgeInsets.all(10),
-            itemCount: data.restaurant.length,
-            itemBuilder: (BuildContext context, int index) {
-              var restaurant = data.restaurant[index];
-              return ListTile(
-                onTap: () {
-                  Navigator.pushNamed(context, RestaurantDetail.routeName,
-                      arguments: restaurant);
-                },
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                leading: Image.network(
-                  '$baseUrl/images/small/${restaurant.pictureId}',
-                  width: 120,
-                  errorBuilder: (ctx, error, _) =>
-                      const Center(child: Icon(Icons.error)),
-                ),
-                title: Text(restaurant.name.toString()),
-                subtitle: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.pin_drop),
-                        Text(restaurant.city.toString()),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.star,
-                          color: Colors.yellow,
-                        ),
-                        Text(restaurant.rating.toString()),
-                      ],
-                    )
-                  ],
-                ),
-              );
-            });
+        if (data.restaurant.isEmpty) {
+          return Center(child: Text('No Favorite data here'));
+        } else {
+          return ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              primary: false,
+              padding: const EdgeInsets.all(10),
+              itemCount: data.restaurant.length,
+              itemBuilder: (BuildContext context, int index) {
+                var restaurant = data.restaurant[index];
+                return ListTile(
+                  onTap: () {
+                    Navigator.pushNamed(context, RestaurantDetail.routeName,
+                        arguments: restaurant);
+                  },
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  leading: Image.network(
+                    '$baseUrl/images/small/${restaurant.pictureId}',
+                    width: 120,
+                    errorBuilder: (ctx, error, _) =>
+                        const Center(child: Icon(Icons.error)),
+                  ),
+                  title: Text(restaurant.name.toString()),
+                  subtitle: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.pin_drop),
+                          Text(restaurant.city.toString()),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                          ),
+                          Text(restaurant.rating.toString()),
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              });
+        }
       },
     ));
   }

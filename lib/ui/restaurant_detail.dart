@@ -28,8 +28,6 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final dbProvider = Provider.of<DbProvider>(context, listen: false);
-
     return Scaffold(
         appBar: AppBar(
           title: const Text('Detail Restaurant'),
@@ -207,12 +205,12 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
             return data.restaurantData
                 ? FloatingActionButton(
                     onPressed: () {
-                      dbProvider.deleteFav(widget.detailRestaurant!.id);
+                      data.deleteFav(widget.detailRestaurant!.id);
                     },
                     child: const Icon(Icons.favorite, color: Colors.red))
                 : FloatingActionButton(
                     onPressed: () {
-                      dbProvider.addFav(widget.detailRestaurant!);
+                      data.addFav(widget.detailRestaurant!);
                     },
                     child: const Icon(Icons.favorite, color: Colors.white));
           },
